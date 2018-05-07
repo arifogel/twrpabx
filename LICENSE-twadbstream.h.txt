@@ -1,0 +1,12 @@
+The file <twadbstream.h> is copied from <https://github.com/omnirom/android_bootable_recovery/blob/android-8.1/adbbu/twadbstream.h>
+
+I could not find a license in that repository.
+However, Dees_Troy, "Lead Developer of TWRP" <https://forum.xda-developers.com/member.php?u=912474> has written at <https://forum.xda-developers.com/showthread.php?t=1943625> the following:
+"All of TWRP 3.x source is public."
+
+I take that to mean it has been released into the public domain or equivalent. If you are a copyright holder and you hold this statement inaccurate, please contact me and let me know how you would like me to proceed.
+
+-Ari Fogel
+<ari@fogelti.me>
+2018-05-07
+
