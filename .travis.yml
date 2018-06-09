@@ -1,0 +1,9 @@
+language: c++
+os: osx
+
+before_install:
+   - brew install pandoc
+
+script:
+   - .travis/build.sh
+
