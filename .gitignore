@@ -58,7 +58,7 @@ test_twrpabx
 # program
 twrpabx
 
-# pamdoc generated manpages
+# pandoc generated manpages
 *.[0-9]
 
 *.la
