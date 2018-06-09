@@ -34,5 +34,5 @@ test_twrpabx_SOURCES = tests/test_twrpabx.cpp $(TWRPABX_SRC)
 doc: $(PAM_ACCESS_OSX_DOC)
 
 man/twrpabx.1: man/twrpabx.1.md
-	pandoc --standalone --to man man/pam_access_osx.8.md > man/pam_access_osx.8
+	pandoc --standalone --to man man/twrpabx.1.md > man/twrpabx.1
 
