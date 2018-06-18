@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
 set -x
-autoreconf -vfi
+autoreconf -vfi ./configure.ac
 ./test.sh
 
