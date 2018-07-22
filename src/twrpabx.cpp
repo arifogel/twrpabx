@@ -91,8 +91,20 @@ void twrpabx::ReadChunk(FILE* input_file, FILE* output_file, char* buf, size_t* 
 
   AdbBackupControlType* control_block = (AdbBackupControlType*)buf;
   if (strncmp(control_block->start_of_header, "TWRP", 4)) {
-    cerr << "Corrupt start of data header" << endl;
-    exit(1);
+    /* No control block. If we are not within one chunk + trailer of EOF, abort. */
+    *size_remaining += TWRPABX_BLOCK_SIZE;
+    if (*size_remaining >= DATA_MAX_CHUNK_SIZE + 1024) {
+      cerr << "Corrupt start of data header" << endl;
+      exit(1);
+    }
+    cout << "No control block; seeking to 2 blocks before EOF" << endl;
+    /* Seek to trailer, i.e. 2 blocks before EOF */
+    if (fseek(input_file, -1024L, SEEK_END) < 0) {
+      perror("Failed to seek 2 blocks before EOF");
+      exit(1);
+    }
+    *size_remaining = 1024;
+    return;
   }
 
   memcpy(strbuf, control_block->type, TWRPABX_TYPE_SIZE);
@@ -161,6 +173,9 @@ bool twrpabx::ReadFile(FILE* input_file, size_t* size_remaining) {
   cout << "File Header type: " << strbuf << endl;
 
   cout << "File size: " << *size_remaining << "\n";
+
+  cout << "twfilehdr.size: " << file_header->size << endl;
+  cout << "twfilehdr.compressed: " << (file_header->compressed?true:false) << endl;
 
   memcpy(strbuf, file_header->name, TWRPABX_NAME_SIZE);
   cout << "Raw file name: " << strbuf << endl;
