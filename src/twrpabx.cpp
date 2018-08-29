@@ -78,7 +78,7 @@ void twrpabx::ReadBackupStreamHeader(FILE* input_file, size_t* size_remaining) {
   free(strbuf);
 }
 
-void twrpabx::ReadChunk(FILE* input_file, FILE* output_file, char* buf, size_t* size_remaining) {
+bool twrpabx::ReadChunk(FILE* input_file, FILE* output_file, char* buf, size_t* size_remaining) {
   size_t bytes_read = fread((void*)buf, 1, TWRPABX_BLOCK_SIZE, input_file);
   cout << "Read " << bytes_read << "  bytes" << endl;
   if (bytes_read < TWRPABX_BLOCK_SIZE) {
@@ -103,12 +103,14 @@ void twrpabx::ReadChunk(FILE* input_file, FILE* output_file, char* buf, size_t* 
       perror("Failed to seek 2 blocks before EOF");
       exit(1);
     }
-    *size_remaining = 1024;
-    return;
+    //*size_remaining = 1024;
+    return true;
   }
 
   memcpy(strbuf, control_block->type, TWRPABX_TYPE_SIZE);
   cout << "Data header type: " << strbuf << endl;
+
+  if (!strncmp(strbuf, "md5trailer", 9)) return true;
 
   size_t max_data = DATA_MAX_CHUNK_SIZE - TWRPABX_BLOCK_SIZE;
   char databuf[max_data];
@@ -128,6 +130,7 @@ void twrpabx::ReadChunk(FILE* input_file, FILE* output_file, char* buf, size_t* 
   }
   cout << "Wrote " << bytes_written << "  bytes" << endl;
   cout << "Remaining bytes in backup file: " << *size_remaining << endl;
+  return false;
 }
 
 bool twrpabx::ReadFile(FILE* input_file, size_t* size_remaining) {
@@ -188,9 +191,10 @@ bool twrpabx::ReadFile(FILE* input_file, size_t* size_remaining) {
 
   FILE* output_file = fopen(last_element, "wb");
 
+  bool my_end = false;
   do {
-   twrpabx::ReadChunk(input_file, output_file, buf, size_remaining);
-  } while (*size_remaining > 1024);
+   my_end = twrpabx::ReadChunk(input_file, output_file, buf, size_remaining);
+  } while (!my_end);
 
   if (fclose(output_file) < 0) {
     perror("Failed to close output file");
@@ -198,9 +202,10 @@ bool twrpabx::ReadFile(FILE* input_file, size_t* size_remaining) {
   }
 
   cout << "Current offset: " << ftell(input_file) << endl;
+  cout << "End of file" << endl;
 
   /* trailer */
-
+/*
   bytes_read = fread((void*)buf, 1, TWRPABX_BLOCK_SIZE, input_file);
   cout << "Read " << bytes_read << " bytes" << endl;
   if (bytes_read < TWRPABX_BLOCK_SIZE) {
@@ -217,9 +222,9 @@ bool twrpabx::ReadFile(FILE* input_file, size_t* size_remaining) {
 
   memcpy(strbuf, file_header->type, TWRPABX_TYPE_SIZE);
   cout << "File trailer type: " << strbuf << endl;
-
   free(buf);
   free(strbuf);
+*/
   return true;
 }
 

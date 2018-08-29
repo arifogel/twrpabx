@@ -17,7 +17,7 @@ public:
   static int Main(int argc, char** argv);
   static void ReadBackupStreamHeader(FILE* input_file, size_t* size_remaining);
   static bool ReadFile(FILE* input_file, size_t* size_remaining);
-  static void ReadChunk(FILE* input_file, FILE* output_file, char* buf, size_t* size_remaining);
+  static bool ReadChunk(FILE* input_file, FILE* output_file, char* buf, size_t* size_remaining);
 };
 
 
