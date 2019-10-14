@@ -165,7 +165,8 @@ bool twrpabx::ReadFile(FILE* input_file, size_t* size_remaining) {
     return false;
   }
 
-  if (strncmp(TWFN, strbuf, TWRPABX_TYPE_SIZE)) {
+  if (strncmp(TWFN, strbuf, TWRPABX_TYPE_SIZE) &&
+      strncmp(TWIMG, strbuf, TWRPABX_TYPE_SIZE)) {
     cerr << "Unexpected type: " << strbuf << endl;
     exit(1);
   }
@@ -175,7 +176,7 @@ bool twrpabx::ReadFile(FILE* input_file, size_t* size_remaining) {
   cout << "File size: " << *size_remaining << "\n";
 
   cout << "twfilehdr.size: " << file_header->size << endl;
-  cout << "twfilehdr.compressed: " << (file_header->compressed?true:false) << endl;
+  cout << "twfilehdr.compressed: " << (file_header->compressed == 1?true:false) << endl;
 
   memcpy(strbuf, file_header->name, TWRPABX_NAME_SIZE);
   cout << "Raw file name: " << strbuf << endl;
